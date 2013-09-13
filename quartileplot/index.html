@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css"
+  href="http://fonts.googleapis.com/css?family=Source+Sans+Pro">
+<style>
+#quartileplot {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#resample {
+  background: white;
+  border: 1px solid lightgrey;
+  color: grey;
+  cursor: pointer;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 10px;
+  padding: 4px;
+  position: absolute;
+  top: 310px;
+  left: 10px;
+}
+#resample:hover {
+  background: lightgrey;
+}
+.center {
+  shape-rendering: crispEdges;
+  stroke: grey;
+}
+.median {
+  fill: grey;
+}
+.outlier {
+  fill: lightgrey;
+}
+.axis line, .axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: lightgrey;
+}
+.axis text {
+  fill: grey;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 10px;
+}
+</style>
+<body>
+<div id="quartileplot"></div>
+<input id="resample" type="button" value="Resample">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="quartileplot.js"></script>
+<script>
+
+var margin = {top: 10, right: 10, bottom: 20, left: 40},
+    width = 500 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+var svg = d3.select("#quartileplot").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var x = d3.scale.ordinal()
+    .rangePoints([0, width], 1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x);
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+// glass identification data
+// http://archive.ics.uci.edu/ml/machine-learning-databases/glass/
+
+d3.csv("glass.csv", function(error, data) {
+
+  var types = d3.map();
+  types.set("1", "Building (FP)");
+  types.set("2", "Building (NFP)");
+  types.set("3", "Vehicle (FP)");
+  types.set("4", "Vehicle (NFP)"); // none in data
+  types.set("5", "Containers");
+  types.set("6", "Tableware");
+  types.set("7", "Headlamps");
+
+  data.forEach(function(d) {
+    d.ri = +d.ri;
+    d.type = types.get(d.type);
+  });
+
+  var dataByType = d3.nest()
+      .key(function(d){ return d.type; })
+      .entries(data);
+
+  x.domain(dataByType.map(function(d){ return d.key; }));
+
+  y.domain(d3.extent(data, function(d){ return d.ri; }));
+
+  var quartileplot = d3.svg.quartileplot()
+      .domain(y.domain())
+      .height(height)
+      .whiskers(whiskers(2))
+      .y(accessor);
+
+  // The accessor function returns a sample of records for each type of glass.
+  // We do this only to demonstrate that quartile plots can be transitioned.
+  function accessor(d) {
+    return d.values.map(function(d) {
+      return d.ri;
+    }).filter(function() {
+      return Math.random() < 0.75;
+    });
+  }
+
+  svg.selectAll(".quartileplot")
+      .data(dataByType)
+    .enter().append("g")
+      .attr("class", "quartileplot")
+      .attr("transform", function(d){ return "translate(" + x(d.key) + ")"; })
+      .call(quartileplot);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  d3.select("#resample").on("click", resample);
+
+  function resample() {
+    d3.selectAll(".quartileplot").call(quartileplot);
+  }
+
+});
+
+// Compute a quartile plot's whiskers in terms of its inter-quartile range.
+// Returns an array of two elements: the values of the lower and upper whiskers.
+function whiskers(k) {
+
+  return function(data) {
+
+    var q1 = d3.quantile(data, 0.25),
+        q2 = d3.quantile(data, 0.5),
+        q3 = d3.quantile(data, 0.75),
+        iqr = q3 - q1,
+        i = 0,
+        j = data.length - 1;
+
+    while (data[i] < q2 - k * iqr) {
+      i += 1;
+    }
+
+    while (data[j] > q2 + k * iqr) {
+      j -= 1;
+    }
+
+    return [data[i], data[j]];
+
+  }
+
+}
+
+</script>
+</body>

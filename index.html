@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <script src="d3.v3.js"></script>
+    </head>
+    <body>
+      <script>
+
+        var margin = {top: 10, right: 10, bottom: 20, left: 40},
+          width = 500 - margin.left - margin.right,
+          height = 300 - margin.top - margin.bottom;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scale.ordinal()
+            .rangePoints([0, width], 1);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+
+        d3.json("fantasy.json", function (error, data) {
+          var dataNest = [];
+          data.player.forEach(function (d, i) {
+            dataNest.push({
+              "key":data.player[i],
+              "values":{
+                "player": data.player[i],
+                "rank": data.rank[i],
+                "ave": data.ave[i]
+              }
+            })
+          });
+          //dataNest = d3.nest().key(function (d) { return d.player }).entries(dataNest);
+
+          x.domain(dataNest.map(function(d){
+             return d.values.player;
+          }));
+
+          y.domain(d3.extent(dataNest, function(d){
+             return d.values.ave;
+          }))
+          
+          var points = svg.selectAll("circle").data(dataNest)
+            .enter().append("circle")
+              .attr("class", "median")
+              .attr("cx", function(d){
+                return x(d.values.player)
+              })
+              .attr("cy", function(d){
+                return y(d.values.ave)
+              })
+              .attr("r", 2); //radius parameter
+        });
+      </script>
+    </body>
+</html>
