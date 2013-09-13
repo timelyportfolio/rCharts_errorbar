@@ -58,7 +58,7 @@ require(rCharts)
 path = "http://timelyportfolio.github.io/rCharts_errorbar"
 ePlot <- rCharts$new()
 ePlot$setLib(path)
-ePlot$templates$script = paste0(path,"/layouts/chart.html"))
+ePlot$templates$script = paste0(path,"/layouts/chart.html")
 #not the way Ramnath intended but we'll hack away
 ePlot$params =  list(
   data = subset(final,category %in% c("qb")),
