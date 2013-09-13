@@ -224,7 +224,7 @@ d3.svg.errorbar = function () {
     return errorbar;
   }
 
-  errorbar.sttdev = function (_) {
+  errorbar.stddev = function (_) {
     if (!arguments.length) return stddev;
     stddev = _;
     return errorbar;

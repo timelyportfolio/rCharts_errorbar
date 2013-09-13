@@ -8,13 +8,21 @@ managers.five <-
   t(data.frame(lapply(managers,function(x){return(fivenum(as.vector(x)))})))
 managers.five.adj <- data.frame(rownames(managers.five),managers.five,stringsAsFactors = FALSE)
 colnames(managers.five.adj) <- c("manager","min","lh","med","uh","max")
+managers.five.adj$sd <- managers.five.adj$med - managers.five.adj$lh 
 
-ePlot$params =  list(
-  data = subset(final,category %in% c("qb")),
+path = "http://timelyportfolio.github.io/rCharts_errorbar"
+path=getwd()
+mgrPlot <- rCharts$new()
+mgrPlot$setLib(path)
+mgrPlot$templates$script = paste0(path,"/layouts/chart.html")
+mgrPlot$params =  list(
+  data = managers.five.adj,
   height = 500,
   width = 1000,
-  x = "player",
-  y = "ave",
-  color = "player"
+  x = "manager",
+  y = "med",
+  color = "manager",
+  stddev = "sd",
+  sdmult = 1
 )
-ePlot
+mgrPlot
