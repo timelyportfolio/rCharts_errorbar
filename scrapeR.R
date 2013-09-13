@@ -46,7 +46,7 @@ ggplot(
   geom_point(aes(x=player,y=ave,colour=category)) + 
   geom_errorbar(aes(ymin=worst,ymax=best,colour=category))
 
-
+require(latticeExtra)
 xyplot(ave~rank|category+ppr,data=final)
 
 
@@ -73,3 +73,12 @@ require(rCharts)
 ePlot <- rCharts$new()
 ePlot$setLib(getwd())
 ePlot$templates$script = paste0(getwd(),"/layouts/chart.html")
+#not the way Ramnath intended but we'll hack away
+ePlot$params =  list(
+  data = subset(final,category %in% c("qb", "wr", "rb")),
+  height = 500,
+  width = 1000,
+  x = "player",
+  y = "ave"
+)
+ePlot

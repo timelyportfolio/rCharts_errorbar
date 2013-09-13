@@ -33,9 +33,11 @@ d3.svg.errorbar = function () {
       var element = d3.select(this);
       //sort if desired
       //data.sort(function (a, b) {
-        //return d3.descending(a.rank, b.rank);
+      //return d3.descending(a.rank, b.rank);
       //  return d3.descending(a[yVar], b[yVar]);
       //});
+
+      data = data.values;
 
       xScale.domain(data.map(function (d) {
         return d[xVar];
@@ -95,56 +97,56 @@ d3.svg.errorbar = function () {
 
   }
 
-  errorbar.xPos = function(_) {
-   if (!arguments.length) return xPos;
+  errorbar.xPos = function (_) {
+    if (!arguments.length) return xPos;
     xPos = _;
     return errorbar;
   };
 
-  errorbar.yPos = function(_) {
-   if (!arguments.length) return yPos;
+  errorbar.yPos = function (_) {
+    if (!arguments.length) return yPos;
     yPos = _;
     return errorbar;
   };
 
-  errorbar.margin = function(_) {
+  errorbar.margin = function (_) {
     if (!arguments.length) return margin;
     margin = _;
     return errorbar;
   };
 
-  errorbar.height = function(_) {
-   if (!arguments.length) return height;
+  errorbar.height = function (_) {
+    if (!arguments.length) return height;
     height = _;
     return errorbar;
   };
 
-  errorbar.width = function(_) {
-   if (!arguments.length) return width;
+  errorbar.width = function (_) {
+    if (!arguments.length) return width;
     width = _;
     return errorbar;
   };
 
-  errorbar.xVar = function(_) {
+  errorbar.xVar = function (_) {
     if (!arguments.length) return xVar;
     xVar = _;
     return errorbar;
   };
 
-  errorbar.yVar= function(_) {
-   if (!arguments.length) return yVar;
+  errorbar.yVar = function (_) {
+    if (!arguments.length) return yVar;
     yVar = _;
     return errorbar;
   };
 
-  errorbar.sttdev= function(_) {
-   if (!arguments.length) return stddev;
+  errorbar.sttdev = function (_) {
+    if (!arguments.length) return stddev;
     stddev = _;
     return errorbar;
   };
 
-  errorbar.sdmult= function(_) {
-   if (!arguments.length) return sdmult;
+  errorbar.sdmult = function (_) {
+    if (!arguments.length) return sdmult;
     sdmult = _;
     return errorbar;
   };

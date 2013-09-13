@@ -1,5 +1,7 @@
       <script>
-        var opts = {{{ params }}};
+       debugger;
+      (function(){
+        var opts = {{{ chartParams }}};
         //var margin = {{{ margin }}},
         //  width = {{{ width }}} - margin.left - margin.right,
         // height = {{{  }}} - margin.top - margin.bottom;
@@ -8,31 +10,81 @@
             .attr("width", opts.width)
             .attr("height", opts.height)
 
-        d3.json("fantasy.json", function (error, data) {
+        //d3.json("fantasy.json", function (error, data) {
 
-          var errorbar = d3.svg.errorbar()
-            .height(height - opts.margin.top - opts.margin.bottom )
-            .width(width - opts.margin.right - opts.margin.left)
-            .xVar(opts.x)
-            .yVar(opts.y);
+          if(!(opts.margin)) opts.margin = { top: 10, right: 10, bottom: 20, left: 40 }
 
-          /*
-          //set these up for facets
-          var nrow = 1, 
-            ncol = 1;
+          //data transform since rCharts does not use toJSONArray() by default
+          var data = [];
 
-          if (opts.facet) {
-            ncol = d3.keys(data, function(d){return d. }).length;
-            nrow = d3.keys();
-            data = d3.nest().key(function (d) { 
-              return d[opts.facet.x] "~" d[opts.facet.y] 
-            }).entries(data);
-          };
-          */
-          data = d3.nest().key(function (d) { return d.category }).entries(data)
+          opts.data[d3.keys(opts.data)[0]].forEach(function(d,i){
+            var tempobj = {};
+            d3.keys(opts.data).forEach(function(key){
+              tempobj[key] = opts.data[key][i];
+            });
+            data.push(tempobj);
+          });
 
-          var g = svg.selectAll("g").data(data.map(function (d) { return d.values }));
-          g.enter().append("g")
-            .call(errorbar);
-        });
+          //if no facet then just make blank object
+          if(!(opts.facet)) opts.facet = {};
+          //if facet not provided for x or y make Dummy variable
+          opts.facet.x = opts.facet.x ? opts.facet.x : "Dummy"
+          opts.facet.y = opts.facet.y ? opts.facet.y : "Dummy"    
+          if(opts.facet.x === "Dummy" || opts.facet.y === "Dummy") {
+            data.forEach(function(d){
+              d.Dummy = 1;
+            })
+          }
+          var rows = d3.set(data.map(function(d){return d[opts.facet.y]})).values();
+          var nrow = rows.length;
+          var cols = d3.set(data.map(function(d){return d[opts.facet.x]})).values()
+          var ncol = cols.length;
+  
+          var tuples = d3.merge(
+            rows.map(function(row,irow){
+              return cols.map(function(col,icol){
+                return {key:row + "~" + col, values: {"row":irow, "col":icol} }
+              })
+            })
+          );
+    
+          var grid = d3.layout.grid()
+            .rows( nrow )
+            .cols( ncol )
+            .size([ opts.width, opts.height-100])
+            .bands();
+
+          var svgGrid = d3.select("#" + opts.id).append("svg")
+            .attr("width", opts.width)
+            .attr("height", opts.height);
+          
+          grid(tuples);  //apply d3-grid layout
+
+          tuples.forEach(function(cell,cellnum) {
+            // Filter the data set for the x and y facets
+            var filteredData = data.filter(function(d){
+              return d[opts.facet.x] == cell.key.split('~')[1]
+            });
+            //split for now but could easily do all in one filter
+            filteredData = filteredData.filter(function(d){
+              return d[opts.facet.y] == cell.key.split('~')[0]
+            });
+    
+            filteredData = d3.nest()
+              .key(function(d){ return d[opts.facet.x] + "~" + opts.facet.y} ).sortKeys(d3.ascending)
+              //.key(function(d){ return d[opts.group] } )
+              .entries(filteredData);
+
+            var errorbar = d3.svg.errorbar()
+              .height(grid.nodeSize()[1]- opts.margin.top - opts.margin.bottom )
+              .width(grid.nodeSize()[0] - opts.margin.right - opts.margin.left)
+              .xVar(opts.x)
+              .yVar(opts.y);
+
+            var g = svg //.selectAll("g").data(filteredData);
+              .append("g").data(filteredData) //g.enter().append("g")
+                .attr("transform","translate(" + (+cell.x + opts.margin.right) + "," + (+cell.y+opts.margin.top) + ")")
+                .call(errorbar);
+          });
+      })();
       </script>
