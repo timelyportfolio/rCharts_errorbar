@@ -18,12 +18,16 @@
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
 
-        var errorbar = d3.errorbar(); 
+        var errorbar = d3.svg.errorbar()
+          .height( height )
+          .width( width )
+          .xVar( "player" )
+          .yVar( "ave" );
 
         d3.json("fantasy.json", function (error, data) {
           data = data.filter(function (d) { return d.ppr == "N" });
-          data = d3.nest().key(function(d){return d.category}).entries(data)
-          var g = svg.selectAll("g").data(data.map(function(d){return d.values}));
+          data = d3.nest().key(function (d) { return d.category }).entries(data)
+          var g = svg.selectAll("g").data(data.map(function (d) { return d.values }));
           g.enter().append("g")
             .call(errorbar);
         });
