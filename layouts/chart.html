@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-        <script src="d3.v3.js"></script>
-        <script src="errorbar.js"></script>
-    </head>
-    <body>
       <script>
-        var opts = {{{ opts }}};
+        var opts = {{{ params }}};
         //var margin = {{{ margin }}},
         //  width = {{{ width }}} - margin.left - margin.right,
         // height = {{{  }}} - margin.top - margin.bottom;
@@ -46,5 +36,3 @@
             .call(errorbar);
         });
       </script>
-    </body>
-</html>

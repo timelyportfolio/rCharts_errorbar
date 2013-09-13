@@ -65,3 +65,11 @@ final$player <- with(final,(reorder(player, -ave)))
 
 
 
+
+
+
+require(rCharts)
+
+ePlot <- rCharts$new()
+ePlot$setLib(getwd())
+ePlot$templates$script = paste0(getwd(),"/layouts/chart.html")

@@ -1,0 +1,5 @@
+errorbar:
+  jshead: [js/d3.v3.js, js/errorbar.js, js/d3-grid.js]
+  cdn:
+    jshead: 
+      - "http://d3js.org/d3.v3.min.js"
