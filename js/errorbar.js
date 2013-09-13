@@ -104,6 +104,68 @@ d3.svg.errorbar = function () {
         .attr("class", "y axis")
         .call(yAxis);
 
+      var focus = element.append("g")
+        .attr("class", "focus")
+        .style("display", "none")
+      //.attr("stroke", "black");
+      //.attr("stroke", "rgb(0,82,109)");
+
+      focus.append("circle")
+          .attr("r", 4.5)
+          .attr("fill", "black"); //"rgb(0,82,109)");
+
+      focus.append("text")
+          .attr("id", "focusx")
+          .attr("x", 9)
+          .attr("dy", ".35em")
+          .attr("font-size", 12)
+          .attr("font-color", "black")
+          .attr("fill", "black")
+          .attr("fill-opacity", 1);
+      //.attr("stroke", "rgb(0,82,109)")
+      //.attr("stroke-opacity", 1);
+
+      focus.append("text")
+          .attr("id", "focusy")
+          .attr("x", 9)
+          .attr("y", 14)
+          .attr("dy", ".35em")
+          .attr("font-size", 12)
+          .attr("fill-opacity", 1);
+
+      element.append("rect")
+          .attr("class", "overlay")
+      //.attr("x", element.attr("x"))
+      //.attr("y", element.attr("y"))
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "none")
+          .attr("stroke", "none")
+          .attr("pointer-events", "all")
+          .on("mouseover", function () { focus.style("display", null); })
+          .on("mouseout", function () {
+            focus.style("display", "none");
+          })
+          .on("mousemove", mousemove);
+
+      var bisectX = d3.bisector(function (d) {
+        return +xScale(d[xVar]);
+      }).left;
+
+      function mousemove() {
+        var x0 = d3.mouse(this)[0];
+        var i = bisectX(d3.select(this).data()[0].values, x0, 1);
+        var d;
+        d = d3.select(this).data()[0].values[i - 1];
+        focus.attr("transform", "translate(" + xScale(d[xVar]) + "," + yScale(d[yVar]) + ")");
+        focus.select("#focusx")
+          .text(d[xVar]);
+        focus.select("#focusy")
+          .text(+d[yVar])
+          .attr("fill", color(d[colorVar]))
+          //.attr("stroke", color(d[colorVar]));
+      }
+
     });
 
   }
