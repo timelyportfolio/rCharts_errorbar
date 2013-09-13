@@ -3,3 +3,5 @@ errorbar:
   cdn:
     jshead: 
       - "http://d3js.org/d3.v3.min.js"
+      - "http://timelyportfolio.github.io/rCharts_errorbar/js/d3-grid.js"
+      - "http://timelyportfolio.github.io/rCharts_errorbar/js/errorbar.js"

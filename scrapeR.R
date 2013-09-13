@@ -50,29 +50,15 @@ require(latticeExtra)
 xyplot(ave~rank|category+ppr,data=final)
 
 
-#write a sample JSON to use while building
-writeLines(noquote(
-  rCharts::toJSONArray(
-    subset(final,category %in% c("qb","rb","wr")))),"fantasy.json")
-
-
-
-
-#two ways to change order
-final <- transform(final, category=reorder(category, ave) ) 
-final$category <- factor(final$category)
-final$player <- with(final,(reorder(player, -ave)))
-
-
-
-
-
-
 require(rCharts)
 
+
+#set working directory to a local and change setLib and templates$script
+#if going to github gh-pages repo not desired
+path = "http://timelyportfolio.github.io/rCharts_errorbar"
 ePlot <- rCharts$new()
-ePlot$setLib(getwd())
-ePlot$templates$script = paste0(getwd(),"/layouts/chart.html")
+ePlot$setLib(path)
+ePlot$templates$script = paste0(path,"/layouts/chart.html"))
 #not the way Ramnath intended but we'll hack away
 ePlot$params =  list(
   data = subset(final,category %in% c("qb", "wr", "rb")),
