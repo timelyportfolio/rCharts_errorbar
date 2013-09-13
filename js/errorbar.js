@@ -44,7 +44,7 @@ d3.svg.errorbar = function () {
       }));
 
       yScale.domain(
-        [0, d3.max(data, function (d) { return +d[yVar] + (1.96 * d[stddev]); })]
+        [0, d3.max(data, function (d) { return +d[yVar] + (sdmult * d[stddev]); })]
       );
 
       var errorbars = element.selectAll("g").data(data);
@@ -76,7 +76,7 @@ d3.svg.errorbar = function () {
             .attr("y1", function (d) { return yScale(d[yVar]); })
             .attr("x2", function (d) { return xScale(d[xVar]); })
             .attr("y2", function (d) {
-              return yScale(+d[yVar] + (1.96 * d[stddev]));
+              return yScale(+d[yVar] + (sdmult * d[stddev]));
             })
             .attr("stroke", "rgb(151, 146, 146)");
         //draw points last so they go on top

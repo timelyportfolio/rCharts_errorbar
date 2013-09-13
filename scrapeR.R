@@ -61,6 +61,16 @@ ePlot$setLib(path)
 ePlot$templates$script = paste0(path,"/layouts/chart.html"))
 #not the way Ramnath intended but we'll hack away
 ePlot$params =  list(
+  data = subset(final,category %in% c("qb")),
+  height = 500,
+  width = 1000,
+  x = "player",
+  y = "ave",
+  color = "player"
+)
+ePlot
+#example of facetting
+ePlot$params =  list(
   data = subset(final,category %in% c("qb", "wr", "rb")),
   height = 500,
   width = 1000,
