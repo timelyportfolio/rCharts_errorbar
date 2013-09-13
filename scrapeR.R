@@ -70,13 +70,16 @@ ePlot$params =  list(
 )
 ePlot
 #example of facetting
-ePlot$params =  list(
+ePlotFacet <- rCharts$new()
+ePlotFacet$setLib(path)
+ePlotFacet$templates$script = paste0(path,"/layouts/chart.html")
+ePlotFacet$params =  list(
   data = subset(final,category %in% c("qb", "wr", "rb")),
-  height = 500,
+  height = 800,
   width = 1000,
-  x = "player",
+  x = "rank",
   y = "ave",
   color = "category",
   facet = list(x = "category", y = "ppr")
 )
-ePlot
+ePlotFacet
