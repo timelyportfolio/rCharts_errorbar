@@ -68,7 +68,7 @@ ePlot$params =  list(
   y = "ave",
   color = "player"
 )
-ePlot
+ePlot$show()
 #example of facetting
 ePlot$params =  list(
   data = subset(final,category %in% c("qb", "wr", "rb")),
@@ -79,4 +79,4 @@ ePlot$params =  list(
   color = "category",
   facet = list(x = "category", y = "ppr")
 )
-ePlot
+ePlot$show()
