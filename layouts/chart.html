@@ -6,6 +6,8 @@
         //  width = {{{ width }}} - margin.left - margin.right,
         // height = {{{  }}} - margin.top - margin.bottom;
 
+        var color = d3.scale.category20();
+
         var svg = d3.select("body").append("svg")
             .attr("width", opts.width)
             .attr("height", opts.height)
@@ -79,12 +81,15 @@
               .height(grid.nodeSize()[1]- opts.margin.top - opts.margin.bottom )
               .width(grid.nodeSize()[0] - opts.margin.right - opts.margin.left)
               .xVar(opts.x)
-              .yVar(opts.y);
+              .yVar(opts.y)
+              .colorVar(opts.color)
+              .color(color);
 
             var g = svg //.selectAll("g").data(filteredData);
               .append("g").data(filteredData) //g.enter().append("g")
                 .attr("transform","translate(" + (+cell.x + opts.margin.right) + "," + (+cell.y+opts.margin.top) + ")")
                 .call(errorbar);
+
           });
       })();
       </script>

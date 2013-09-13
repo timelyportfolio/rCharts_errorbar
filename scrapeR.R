@@ -79,6 +79,8 @@ ePlot$params =  list(
   height = 500,
   width = 1000,
   x = "player",
-  y = "ave"
+  y = "ave",
+  color = "category",
+  facet = list(x = "category", y = "ppr")
 )
 ePlot

@@ -9,6 +9,8 @@ d3.svg.errorbar = function () {
       width = 600,
       xVar = "x",
       yVar = "y",
+      colorVar = null,
+      color = d3.scale.category20(),
       stddev = "stddev",
       sdmult = 1.96;
 
@@ -26,8 +28,6 @@ d3.svg.errorbar = function () {
     var yAxis = d3.svg.axis()
         .scale(yScale)
         .orient("left");
-
-    var color = d3.scale.category20();
 
     selection.each(function (data, index) {
       var element = d3.select(this);
@@ -89,7 +89,7 @@ d3.svg.errorbar = function () {
             .attr("cy", function (d) {
               return yScale(d[yVar])
             })
-            .attr("fill", function (d) { return color(d.category) })
+            .attr("fill", function (d) { return color(d[colorVar]) })
             .attr("r", 2); //radius parameter
       });
 
@@ -138,6 +138,18 @@ d3.svg.errorbar = function () {
     yVar = _;
     return errorbar;
   };
+
+  errorbar.colorVar = function (_) {
+    if (!arguments.length) return colorVar;
+    colorVar = _;
+    return errorbar;
+  };
+
+  errorbar.color = function(_) {
+    if (!arguments.length) return color ? color.call(this) : color;
+    color = d3.functor(_);
+    return errorbar;
+  }
 
   errorbar.sttdev = function (_) {
     if (!arguments.length) return stddev;
