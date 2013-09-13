@@ -77,9 +77,9 @@ ePlotFacet$params =  list(
   data = subset(final,category %in% c("qb", "wr", "rb")),
   height = 800,
   width = 1000,
-  x = "rank",
+  x = "player",
   y = "ave",
   color = "category",
-  facet = list(x = "category", y = "ppr")
+  facet = list(x = "category") #, y = "ppr")
 )
 ePlotFacet
