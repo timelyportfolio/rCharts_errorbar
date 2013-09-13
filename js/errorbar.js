@@ -44,7 +44,7 @@ d3.svg.errorbar = function () {
       }));
 
       yScale.domain(
-        [0, d3.max(data, function (d) { return d[yVar]; })]
+        [0, d3.max(data, function (d) { return +d[yVar] + (1.96 * d[stddev]); })]
       );
 
       var errorbars = element.selectAll("g").data(data);
