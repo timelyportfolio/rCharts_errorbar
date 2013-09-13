@@ -93,6 +93,17 @@ d3.svg.errorbar = function () {
             .attr("r", 2); //radius parameter
       });
 
+      /* could add x axis but for specific first purpose no room
+      element.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+      */
+
+      element.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
     });
 
   }

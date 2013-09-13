@@ -1,3 +1,16 @@
+<style>
+.axis line, .axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: lightgrey;
+}
+.axis text {
+  fill: grey;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 10px;
+}
+</style>
+
       <script>
        debugger;
       (function(){
@@ -14,7 +27,7 @@
 
         //d3.json("fantasy.json", function (error, data) {
 
-          if(!(opts.margin)) opts.margin = { top: 10, right: 10, bottom: 20, left: 40 }
+          if(!(opts.margin)) opts.margin = { top: 10, right: 40, bottom: 20, left: 10 }
 
           //data transform since rCharts does not use toJSONArray() by default
           var data = [];
