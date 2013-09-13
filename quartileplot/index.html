@@ -104,7 +104,7 @@ d3.csv("glass.csv", function(error, data) {
   var quartileplot = d3.svg.quartileplot()
       .domain(y.domain())
       .height(height)
-      .whiskers(whiskers(2))
+      //.whiskers(whiskers(2))
       .y(accessor);
 
   // The accessor function returns a sample of records for each type of glass.
