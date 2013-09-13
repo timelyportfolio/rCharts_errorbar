@@ -43,9 +43,9 @@ d3.svg.errorbar = function () {
         return d[xVar];
       }));
 
-      yScale.domain(d3.extent(data, function (d) {
-        return d[yVar];
-      }))
+      yScale.domain(
+        [0, d3.max(data, function (d) { return d[yVar]; })]
+      );
 
       var errorbars = element.selectAll("g").data(data);
 
@@ -95,9 +95,9 @@ d3.svg.errorbar = function () {
 
       /* could add x axis but for specific first purpose no room
       element.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
       */
 
       element.append("g")
@@ -156,7 +156,7 @@ d3.svg.errorbar = function () {
     return errorbar;
   };
 
-  errorbar.color = function(_) {
+  errorbar.color = function (_) {
     if (!arguments.length) return color ? color.call(this) : color;
     color = d3.functor(_);
     return errorbar;
