@@ -98,6 +98,9 @@
               .colorVar(opts.color)
               .color(color);
 
+            if(opts.stddev) errorbar.stddev(opts.stddev);
+            if(opts.sdmult) errorbar.sdmult(opts.sdmult);
+
             var g = svg //.selectAll("g").data(filteredData);
               .append("g").data(filteredData) //g.enter().append("g")
                 .attr("transform","translate(" + (+cell.x + opts.margin.right) + "," + (+cell.y+opts.margin.top) + ")")
