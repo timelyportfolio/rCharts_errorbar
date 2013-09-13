@@ -1,6 +1,6 @@
 //copied much from this example https://gist.github.com/iaindillingham/5068071 by
 // Iain Dillingham, <iain@dillingham.me.uk>
-d3.errorbar = function() {
+d3.errorbar = function () {
 
   function errorbar(selection) {
 
@@ -19,14 +19,16 @@ d3.errorbar = function() {
 
     var color = d3.scale.category20();
 
-    selection.each(function(data, index) {
+    selection.each(function (data, index) {
+      var element = d3.select(this);
       //sort if desired
       data.sort(function (a, b) {
         //return d3.descending(a.rank, b.rank);
         return d3.descending(a.ave, b.ave);
       });
 
-      data = data.filter(function (d) { return d.ppr == "N" });
+      x = d3.scale.ordinal()
+        .rangePoints([0, width], 1);
 
       x.domain(data.map(function (d) {
         return d.player;
@@ -36,8 +38,8 @@ d3.errorbar = function() {
         return d.ave;
       }))
 
-      var errorbars = selection.selectAll("g").data(data);
-            
+      var errorbars = element.selectAll("g").data(data);
+
       errorbars.enter().append("g")
           .attr("class", "errorbars");
 
