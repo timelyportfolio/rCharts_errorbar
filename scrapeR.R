@@ -117,8 +117,38 @@ ePlotPPR$params =  list(
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
 )
 ePlotPPR
+ePlotPPR$srccode = '
+#hacky way of doing ppr; know this is still not really acceptable
+final$player_ppr <- paste0(final$player,"_",final$ppr)
+#then get the median rank for each player which will serve as a key for rank
+final$ave_median <- lapply(
+  final$player,
+  FUN=function(x){
+    return(median(final[which(final$player==x),]$ave) )
+  }
+)
+ePlotPPR$setLib(path)
+ePlotPPR$templates$script = paste0(path,"/layouts/chart.html")
+#not the way Ramnath intended but we will hack away
+ePlotPPR$params =  list(
+  data = subset(subset(final,category %in% c("wr")), rank < 20),
+  height = 500,
+  width = 1000,
+  x = "player_ppr",
+  y = "ave",
+  color = "player",
+  radius = 4,
+  sort = list( var = "ave_median" ),
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
+)
+ePlotPPR
+'
+ePlotPPR$templates$page = "rChart2.html"
+
 
 #here is a dimple version of the above
+#hacky way of doing ppr; know this is still not really acceptable
+final$player_ppr <- paste0(final$player,"_",final$ppr)
 dPlotPPR <- dPlot(
   x = c("player","ppr"),
   y = "ave",
@@ -130,4 +160,22 @@ dPlotPPR <- dPlot(
   bounds = list( x = 20, y = 20, width = 700, height = 300)
 )
 dPlotPPR$xAxis ( orderRule = "ave" )
+dPlotPPR$srccode = '
+#hacky way of doing ppr; know this is still not really acceptable
+final$player_ppr <- paste0(final$player,"_",final$ppr)
+dPlotPPR <- dPlot(
+x = c("player","ppr"),
+y = "ave",
+groups = "player",
+data = subset(subset(final,category %in% c("wr")), rank < 20),
+type = "bubble",
+height = 400,
+width = 800,
+bounds = list( x = 20, y = 20, width = 700, height = 300)
+)
+dPlotPPR$xAxis ( orderRule = "ave" )
 dPlotPPR
+'
+dPlotPPR$templates$page = "rChart2.html"
+dPlotPPR
+dPlotPPR$publish(description= "rCharts dimple version of Fantasy",id = 6585060)
