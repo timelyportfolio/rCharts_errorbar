@@ -66,7 +66,9 @@ ePlot$params =  list(
   width = 1000,
   x = "player",
   y = "ave",
-  color = "player"
+  color = "player",
+  radius = 4,
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
 )
 ePlot
 #example of facetting
