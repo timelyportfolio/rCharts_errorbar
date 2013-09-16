@@ -11,8 +11,8 @@ d3.svg.errorbar = function () {
       yVar = "y",
       colorVar = null,
       color = d3.scale.category20(),
-      stddev = "stddev",
-      sdmult = 1.96;
+      radius = 2,
+      whiskersAccessor = null;
 
   function errorbar(selection) {
 
@@ -39,12 +39,14 @@ d3.svg.errorbar = function () {
 
       data = data.values;
 
-      xScale.domain(data.map(function (d) {
+     xScale.domain(data.map(function (d) {
         return d[xVar];
       }));
 
       yScale.domain(
-        [0, d3.max(data, function (d) { return +d[yVar] + (sdmult * d[stddev]); })]
+        [0, d3.max(data, function (d) { 
+          return whiskersAccessor(d)[1];
+        })]
       );
 
       var errorbars = element.selectAll("g").data(data);
@@ -65,7 +67,7 @@ d3.svg.errorbar = function () {
             .attr("y1", function (d) { return yScale(d[yVar]); })
             .attr("x2", function (d) { return xScale(d[xVar]); })
             .attr("y2", function (d) {
-              return yScale(+d[yVar] - (sdmult * d[stddev]));
+              return yScale(whiskersAccessor(d)[0]);
             })
             .attr("stroke", "rgb(151, 146, 146)");
         //now the upper line
@@ -76,7 +78,7 @@ d3.svg.errorbar = function () {
             .attr("y1", function (d) { return yScale(d[yVar]); })
             .attr("x2", function (d) { return xScale(d[xVar]); })
             .attr("y2", function (d) {
-              return yScale(+d[yVar] + (sdmult * d[stddev]));
+              return yScale(whiskersAccessor(d)[1]);
             })
             .attr("stroke", "rgb(151, 146, 146)");
         //draw points last so they go on top
@@ -90,7 +92,7 @@ d3.svg.errorbar = function () {
               return yScale(d[yVar])
             })
             .attr("fill", function (d) { return color(d[colorVar]) })
-            .attr("r", 2); //radius parameter
+            .attr("r", radius); //radius parameter
       });
 
       /* could add x axis but for specific first purpose no room
@@ -224,15 +226,15 @@ d3.svg.errorbar = function () {
     return errorbar;
   }
 
-  errorbar.stddev = function (_) {
-    if (!arguments.length) return stddev;
-    stddev = _;
+  errorbar.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
     return errorbar;
   };
 
-  errorbar.sdmult = function (_) {
-    if (!arguments.length) return sdmult;
-    sdmult = _;
+  errorbar.whiskers = function(_) {
+    if (!arguments.length) return whiskersAccessor;
+    whiskersAccessor = _;
     return errorbar;
   };
 

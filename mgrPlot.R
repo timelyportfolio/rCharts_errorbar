@@ -22,7 +22,20 @@ mgrPlot$params =  list(
   x = "manager",
   y = "med",
   color = "manager",
-  stddev = "sd",
-  sdmult = 1
+  radius = 4,
+  whiskers = c("min","max")
+)
+mgrPlot
+
+#now try a function for whiskers
+mgrPlot$params =  list(
+  data = managers.five.adj,
+  height = 500,
+  width = 1000,
+  x = "manager",
+  y = "med",
+  color = "manager",
+  radius = 4,
+  whiskers = "#!function(d){return [d.lh,d.uh]}!#"
 )
 mgrPlot

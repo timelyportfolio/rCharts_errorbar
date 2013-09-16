@@ -80,6 +80,8 @@ ePlotFacet$params =  list(
   x = "player",
   y = "ave",
   color = "category",
+  radius = 4,
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
   facet = list(x = "category") #, y = "ppr")
 )
 ePlotFacet

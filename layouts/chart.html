@@ -96,10 +96,20 @@
               .xVar(opts.x)
               .yVar(opts.y)
               .colorVar(opts.color)
-              .color(color);
+              .color(color)
+              .radius(opts.radius);
 
-            if(opts.stddev) errorbar.stddev(opts.stddev);
-            if(opts.sdmult) errorbar.sdmult(opts.sdmult);
+            if(opts.whiskers) {
+              if (typeof opts.whiskers === "function") {
+                errorbar.whiskers(opts.whiskers)
+              } else {
+                errorbar.whiskers(
+                  function(d) {
+                    return [d[opts.whiskers[0]], d[opts.whiskers[1]]]
+                  }
+                );
+              }
+            }; 
 
             var g = svg //.selectAll("g").data(filteredData);
               .append("g").data(filteredData) //g.enter().append("g")
