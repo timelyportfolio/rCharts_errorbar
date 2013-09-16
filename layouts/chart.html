@@ -111,6 +111,10 @@
               }
             }; 
 
+            if(opts.sort) {
+              errorbar.sort(opts.sort);
+            }
+
             var g = svg //.selectAll("g").data(filteredData);
               .append("g").data(filteredData) //g.enter().append("g")
                 .attr("transform","translate(" + (+cell.x + opts.margin.right) + "," + (+cell.y+opts.margin.top) + ")")

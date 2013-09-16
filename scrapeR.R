@@ -56,18 +56,19 @@ require(rCharts)
 #set working directory to a local and change setLib and templates$script
 #if going to github gh-pages repo not desired
 path = "http://timelyportfolio.github.io/rCharts_errorbar"
+#path = getwd()
 ePlot <- rCharts$new()
 ePlot$setLib(path)
 ePlot$templates$script = paste0(path,"/layouts/chart.html")
 #not the way Ramnath intended but we'll hack away
 ePlot$params =  list(
-  data = subset(final,category %in% c("qb")),
+  data = subset(subset(final,category %in% c("rb")), rank < 20),
   height = 500,
   width = 1000,
   x = "player",
   y = "ave",
   color = "player",
-  radius = 4,
+  radius = 8,
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
 )
 ePlot
@@ -82,8 +83,9 @@ ePlotFacet$params =  list(
   x = "player",
   y = "ave",
   color = "category",
-  radius = 4,
+  radius = 2,
+  sort = list(var = "rank", order = "descending"),
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
-  facet = list(x = "category") #, y = "ppr")
+  facet = list(x = "category", y = "ppr")
 )
 ePlotFacet

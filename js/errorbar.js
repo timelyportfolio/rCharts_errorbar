@@ -12,12 +12,14 @@ d3.svg.errorbar = function () {
       colorVar = null,
       color = d3.scale.category20(),
       radius = 2,
-      whiskersAccessor = null;
+      whiskersAccessor = null,
+      sort = null;
 
   function errorbar(selection) {
 
     var xScale = d3.scale.ordinal()
-        .rangePoints([0, width], 1);
+      .rangePoints([0, width], 1)
+      //.rangeRoundBands([0, width], 0.08);
 
     var yScale = d3.scale.linear()
         .range([height, 0]);
@@ -31,20 +33,22 @@ d3.svg.errorbar = function () {
 
     selection.each(function (data, index) {
       var element = d3.select(this);
-      //sort if desired
-      //data.sort(function (a, b) {
-      //return d3.descending(a.rank, b.rank);
-      //  return d3.descending(a[yVar], b[yVar]);
-      //});
 
       data = data.values;
 
-     xScale.domain(data.map(function (d) {
-        return d[xVar];
+      //sort if desired
+      if(sort) {
+        data.sort(function (a, b) {
+          return d3[sort.order?sort.order:"ascending"](a[sort.var], b[sort.var]);
+        });
+      }
+
+      xScale.domain(data.map(function (d) {
+        return d[xVar]// + "~" + d.ppr;
       }));
 
       yScale.domain(
-        [0, d3.max(data, function (d) { 
+        [0, d3.max(data, function (d) {
           return whiskersAccessor(d)[1];
         })]
       );
@@ -63,9 +67,9 @@ d3.svg.errorbar = function () {
         errorbar.selectAll(".lower").data(errorbar.data())
           .enter().append("line")
             .attr("class", "lower")
-            .attr("x1", function (d) { return xScale(d[xVar]); })
+            .attr("x1", function (d, i) { return xScale(d[xVar]); })
             .attr("y1", function (d) { return yScale(d[yVar]); })
-            .attr("x2", function (d) { return xScale(d[xVar]); })
+            .attr("x2", function (d, i) { return xScale(d[xVar]) })
             .attr("y2", function (d) {
               return yScale(whiskersAccessor(d)[0]);
             })
@@ -86,7 +90,7 @@ d3.svg.errorbar = function () {
           .enter().append("circle")
             .attr("class", "points")
             .attr("cx", function (d) {
-              return xScale(d[xVar])
+              return xScale(d[xVar]);
             })
             .attr("cy", function (d) {
               return yScale(d[yVar])
@@ -165,7 +169,7 @@ d3.svg.errorbar = function () {
         focus.select("#focusy")
           .text(+d[yVar])
           .attr("fill", color(d[colorVar]))
-          //.attr("stroke", color(d[colorVar]));
+        //.attr("stroke", color(d[colorVar]));
       }
 
     });
@@ -226,15 +230,21 @@ d3.svg.errorbar = function () {
     return errorbar;
   }
 
-  errorbar.radius = function(_) {
+  errorbar.radius = function (_) {
     if (!arguments.length) return radius;
     radius = _;
     return errorbar;
   };
 
-  errorbar.whiskers = function(_) {
+  errorbar.whiskers = function (_) {
     if (!arguments.length) return whiskersAccessor;
     whiskersAccessor = _;
+    return errorbar;
+  };
+
+  errorbar.sort = function (_) {
+    if (!arguments.length) return sort;
+    sort = _;
     return errorbar;
   };
 
