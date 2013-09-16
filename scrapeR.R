@@ -62,13 +62,14 @@ ePlot$setLib(path)
 ePlot$templates$script = paste0(path,"/layouts/chart.html")
 #not the way Ramnath intended but we'll hack away
 ePlot$params =  list(
-  data = subset(subset(final,category %in% c("rb")), rank < 20),
+  data = subset(final,category %in% c("qb")), #subset(subset(final,category %in% c("rb")), rank < 20),
   height = 500,
   width = 1000,
   x = "player",
   y = "ave",
   color = "player",
   radius = 8,
+  sort = list( var = "ave" ),
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
 )
 ePlot
@@ -84,8 +85,28 @@ ePlotFacet$params =  list(
   y = "ave",
   color = "category",
   radius = 2,
-  sort = list(var = "rank", order = "descending"),
+  sort = list(var = "ave"),
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
   facet = list(x = "category", y = "ppr")
 )
 ePlotFacet
+
+
+#hacky way of doing ppr; know this is still not really acceptable
+final$player_ppr = factor(paste0(final$player,"_",final$ppr))
+ePlotPPR <- rCharts$new()
+ePlotPPR$setLib(path)
+ePlotPPR$templates$script = paste0(path,"/layouts/chart.html")
+#not the way Ramnath intended but we'll hack away
+ePlotPPR$params =  list(
+  data = subset(subset(final,category %in% c("rb")), rank < 50),
+  height = 500,
+  width = 1000,
+  x = "player_ppr",
+  y = "ave",
+  color = "player",
+  radius = 8,
+  sort = list( var = "best" ),
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
+)
+ePlotPPR
