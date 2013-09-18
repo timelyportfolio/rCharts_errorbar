@@ -49,7 +49,8 @@ ggplot(
 require(latticeExtra)
 xyplot(ave~rank|category+ppr,data=final)
 
-
+require(Mclust)
+xyplot(ave~rank|category,groups=Mclust(final[,c("ave","rank")])$classification,data=final)
 require(rCharts)
 
 
