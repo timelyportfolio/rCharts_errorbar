@@ -71,7 +71,8 @@ ePlot$params =  list(
   color = "player",
   radius = 8,
   sort = list( var = "ave" ),
-  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
+  tooltipLabels = c("player","ave","best","worst") 
 )
 ePlot
 #example of facetting
@@ -88,7 +89,8 @@ ePlotFacet$params =  list(
   radius = 2,
   sort = list(var = "ave"),
   whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
-  facet = list(x = "category", y = "ppr")
+  facet = list(x = "category", y = "ppr"),
+  tooltipLabels = c("player","ave","best","worst") 
 )
 ePlotFacet
 
@@ -115,7 +117,8 @@ ePlotPPR$params =  list(
   color = "player",
   radius = 4,
   sort = list( var = "ave_median" ),
-  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
+  tooltipLabels = c("player","ave","best","worst")   
 )
 ePlotPPR
 ePlotPPR$srccode = '
@@ -140,7 +143,8 @@ ePlotPPR$params =  list(
   color = "player",
   radius = 4,
   sort = list( var = "ave_median" ),
-  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#"
+  whiskers = "#!function(d){return [d.ave - 1.96 * d.stddev, d.ave + 1.96 * d.stddev]}!#",
+  tooltipLabels = c("player","ave","best","worst") 
 )
 ePlotPPR
 '
