@@ -13,7 +13,8 @@ d3.svg.errorbar = function () {
       color = d3.scale.category20(),
       radius = 2,
       whiskersAccessor = null,
-      sort = null;
+      sort = null,
+      tooltipLabels = [];
 
   function errorbar(selection) {
 
@@ -120,9 +121,16 @@ d3.svg.errorbar = function () {
           .attr("r", 4.5)
           .attr("fill", "black"); //"rgb(0,82,109)");
 
-      focus.append("text")
-          .attr("id", "focusx")
+      var focustext = focus.selectAll('.focustext').data(tooltipLabels)
+      
+      //handle enter
+      focustext.enter().append("text")
+          .attr("class", "focustext")
+
+      //handle update
+      focustext
           .attr("x", 9)
+          .attr("y", function(d,i){ return i * 14})
           .attr("dy", ".35em")
           .attr("font-size", 12)
           .attr("font-color", "black")
@@ -131,13 +139,8 @@ d3.svg.errorbar = function () {
       //.attr("stroke", "rgb(0,82,109)")
       //.attr("stroke-opacity", 1);
 
-      focus.append("text")
-          .attr("id", "focusy")
-          .attr("x", 9)
-          .attr("y", 14)
-          .attr("dy", ".35em")
-          .attr("font-size", 12)
-          .attr("fill-opacity", 1);
+      //handle exit
+      focustext.exit().remove();
 
       element.append("rect")
           .attr("class", "overlay")
@@ -164,12 +167,11 @@ d3.svg.errorbar = function () {
         var d;
         d = d3.select(this).data()[0].values[i - 1];
         focus.attr("transform", "translate(" + xScale(d[xVar]) + "," + yScale(d[yVar]) + ")");
-        focus.select("#focusx")
-          .text(d[xVar]);
-        focus.select("#focusy")
-          .text(+d[yVar])
-          .attr("fill", color(d[colorVar]))
-        //.attr("stroke", color(d[colorVar]));
+        focus.selectAll(".focustext")
+          .text(function(dd) {
+             return dd + ": " + d[dd];
+          })
+          .attr("fill", color(d[colorVar]));
       }
 
     });
@@ -245,6 +247,12 @@ d3.svg.errorbar = function () {
   errorbar.sort = function (_) {
     if (!arguments.length) return sort;
     sort = _;
+    return errorbar;
+  };
+
+  errorbar.tooltipLabels = function (_) {
+    if (!arguments.length) return tooltipLabels;
+    tooltipLabels = _;
     return errorbar;
   };
 

@@ -97,7 +97,8 @@
               .yVar(opts.y)
               .colorVar(opts.color)
               .color(color)
-              .radius(opts.radius);
+              .radius(opts.radius)
+              .tooltipLabels(opts.tooltipLabels?opts.tooltipLabels:[]);
 
             if(opts.whiskers) {
               if (typeof opts.whiskers === "function") {
