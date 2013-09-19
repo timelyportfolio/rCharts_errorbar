@@ -31,7 +31,7 @@
       <div class='row'>
         <div class='span8'>
           <div class="bs-docs-example">
-            <div id='' class='rChart nvd3Plot rCharts_errorbar'></div>
+            <div id='plot' class='rChart nvd3Plot rCharts_errorbar'></div>
           <br/>
 <pre><code class='r'>
 #hacky way of doing ppr; know this is still not really acceptable
@@ -154,7 +154,7 @@ ePlotPPR
 
         var color = d3.scale.category20();
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("#plot").append("svg")
             .attr("width", opts.width)
             .attr("height", opts.height)
 
@@ -202,7 +202,7 @@ ePlotPPR
             .size([ opts.width, opts.height-100])
             .bands();
 
-          var svgGrid = d3.select("#" + opts.id).append("svg")
+          var svgGrid = d3.select("#plot").append("svg")
             .attr("width", opts.width)
             .attr("height", opts.height);
           
