@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>rCharts Custom | Cancer, Fantasy Football, and Three Level Mixed Effects Logistic Regression</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <style>
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+  </style>
+  
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+<link  rel="stylesheet" 
+    href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css">
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/bootstrap-responsive.min.css">
+  
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/main.css">
+  <link rel="stylesheet" href="libraries/highlighters/prettify/css/twitter-bootstrap.css" />
+  <script src="libraries/frameworks/bootstrap/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/frameworks/bootstrap/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+    <link rel=stylesheet href="http://fonts.googleapis.com/css?family=Raleway:300"></link>
+<link rel=stylesheet href="http://fonts.googleapis.com/css?family=Oxygen"></link>
+
+  
+</head>
+<body>
+   <!--[if lt IE 7]>
+     <p class="chromeframe">You are using an outdated browser. 
+       <a href="http://browsehappy.com/">Upgrade your browser today</a> or 
+       <a href="http://www.google.com/chromeframe/?redirect=true"> 
+         install Google Chrome Frame
+       </a> to better experience this site.
+    </p>
+   <![endif]-->
+   <!-- Ref: http://twitter.github.com/bootstrap/examples/hero.html -->
+   
+    <div class="container">
+      
+<style>
+iframe{
+  height:550px;
+  width:1000px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+  font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+  background-color: #D4DAEC;
+    text-indent: 100px; 
+}
+
+h4 {
+  text-indent: 100px;
+}
+</style>
+  
+
+<p><a href="https://github.com/timelyportfolio/rCharts_errorbar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a></p>
+
+<h1>Cancer, Fantasy Football, and Three Level Mixed Effects Logistic Regression</h1>
+
+<h3>Just a Little Tweet</h3>
+
+<p>This circuitous journey all started with a little tweet.</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a> <a href="https://twitter.com/timelyportfolio">@timelyportfolio</a> are there any examples out there that demonstrate how to add error bars to points with rCharts?</p>&mdash; Carson Sievert (@cpsievert) <a href="https://twitter.com/cpsievert/statuses/376463522433339392">September 7, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>I started exploring how <code>rCharts</code> could make error bars, and I came up with 3 fine examples courtesy of this tweet</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/vgoklani">@vgoklani</a> <a href="https://twitter.com/timelyportfolio">@timelyportfolio</a> <a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a> <a href="https://twitter.com/nachocaballero">@nachocaballero</a> Some ideas <a href="http://t.co/wHIHxD5ybx">http://t.co/wHIHxD5ybx</a> <a href="http://t.co/DLKNg2KCac">http://t.co/DLKNg2KCac</a> <a href="http://t.co/y0wNv753qw">http://t.co/y0wNv753qw</a></p>&mdash; Christophe Viau (@d3visualization) <a href="https://twitter.com/d3visualization/statuses/347505203236454401">June 20, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>For the original use which I later found out would be fantasy football rankings, I thought this <a href="http://bl.ocks.org/iaindillingham/5068071">quartile plot</a> would work nicely.  I went to work making changes to the quartile plot so that it would play well with <code>rCharts</code> and also allow small multiples or facets.</p>
+
+<h3>And Another Little Tweet</h3>
+
+<p>Then this morning another tweet.</p>
+
+<blockquote class="twitter-tweet"><p>The UCLA Stats consulting website is a gift that keeps on giving. Great primer on mixed effects logit in <a href="https://twitter.com/search?q=%23rstats&amp;src=hash">#rstats</a> <a href="http://t.co/0ZyUNj742i">http://t.co/0ZyUNj742i</a></p>&mdash; hjms (@hjms) <a href="https://twitter.com/hjms/statuses/383547993548275712">September 27, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>and at the end of that very good tutorial I found a lattice <code>dotplot</code> that when flipped looked remarkably similar to my d3 errorbar.</p>
+
+<p>R code from this <a href="http://www.ats.ucla.edu/stat/r/dae/melogit.htm">fine article</a></p>
+
+<blockquote>
+    UCLA: Statistical Consulting Group
+    R Data Analysis Examples: Mixed Effects Logistic Regression
+    http://www.ats.ucla.edu/stat/r/dae/melogit.htm
+    Accessed 9/27/2013
+</blockquote>
+
+<pre><code class="r">#require(ggplot2)
+#require(GGally)
+require(reshape2)
+require(lme4)
+#require(compiler)
+#require(parallel)
+#require(boot)
+
+hdp &lt;- read.csv(&quot;http://www.ats.ucla.edu/stat/data/hdp.csv&quot;)
+hdp &lt;- within(hdp, {
+  Married &lt;- factor(Married, levels = 0:1, labels = c(&quot;no&quot;, &quot;yes&quot;))
+  DID &lt;- factor(DID)
+  HID &lt;- factor(HID)
+})
+
+
+# estimate the model and store results in m
+m3a &lt;- glmer(remission ~ Age + LengthofStay + FamilyHx + IL6 + CRP +
+  CancerStage + Experience + (1 | DID) + (1 | HID),
+  data = hdp, family = binomial, nAGQ=1)
+
+# print the mod results without correlations among fixed effects
+# print(m3a, corr=FALSE)
+
+dP &lt;- dotplot(
+  ranef(m3a, which = &quot;DID&quot;, postVar = TRUE),
+  scales = list(y = list(alternating = 0))
+)
+print(dP)
+</code></pre>
+
+<p>$DID
+<img src="assets/fig/unnamed-chunk-2.png" alt="plot of chunk unnamed-chunk-2"> </p>
+
+<p>It looked so close that I just had to try to replicate it.  I scrambled to scrape the surface of Three Level Mixed Effects Logistic Regression just enough to extricate the data needed for the plot.  I dug into the <code>str</code> of the lattice plot and examined the <a href="https://github.com/lme4/lme4/blob/bf060a61168499d314b6248da8b2dc468e3af3c9/R/lmer.R#L2190">source code from <code>lme4</code></a>.</p>
+
+<p>This little bit of code gets the data that we will need to plot.</p>
+
+<pre><code class="r">## back into the x, y, and errorbar components by looking at
+## both the structure of the dotplot and also the lme4 source
+## https://github.com/lme4/lme4/blob/bf060a61168499d314b6248da8b2dc468e3af3c9/R/lmer.R#L2190
+# str(dP)
+## dP$DID$panel.args.common gives us the dotplot se which will be our error portion
+## looking at the source from lme4 we get by using attr
+##    attr(ranef(m3a, which = &quot;DID&quot;, postVar = TRUE)$DID,&quot;postVar&quot;)
+## dP$DID$panel.args$x or sort(ranef(m3a, which = &quot;DID&quot;, postVar = TRUE)$DID[,1]) will be our y
+## dP$DID$panel.args$y or just the index will serve as our x
+
+## now that we know our x, y, and errorbar
+## make a data.frame that we will use with rCharts
+
+r &lt;- ranef(m3a, which = &quot;DID&quot;, postVar = TRUE)$DID
+dfForPlot &lt;- data.frame(
+  rownames(r),  #this will be our x
+  r[,1],            #this will be our y
+  as.numeric(attr( r, &quot;postVar&quot; ))  #this will be our se
+)
+colnames(dfForPlot) &lt;- c(&quot;id&quot;,&quot;intercept&quot;,&quot;se&quot;)
+</code></pre>
+
+<h3>d3-ify in R with rCharts</h3>
+
+<p>I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.</p>
+
+<pre><code class="r">## using very experimental version of rCharts
+## require(devtools)
+## install_github(&quot;rCharts&quot;, &quot;timelyportfolio&quot;, ref = &quot;test-speedimprove&quot;)
+require(rCharts)
+
+#set working directory to a local and change setLib and templates$script
+#if going to github gh-pages repo not desired
+path = &quot;http://timelyportfolio.github.io/rCharts_errorbar&quot;
+#path = getwd()
+ePlot &lt;- rCharts$new()
+ePlot$setLib(path)
+ePlot$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
+#not the way Ramnath intended but we&#39;ll hack away
+ePlot$params =  list(
+  data = dfForPlot,
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = &quot;id&quot;,
+  y = &quot;intercept&quot;,
+  radius = 4,
+  sort = list( var = &quot;intercept&quot; ),
+  whiskers = &quot;#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#&quot;,
+  tooltipLabels = c(&quot;id&quot;,&quot;intercept&quot;,&quot;se&quot;) 
+)
+ePlot
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-4.html seamless></iframe>
+
+<p>And since we are spoiled in R by facets in <code>ggplot2</code> and strips in <code>lattice</code>, I just have to demo the small multiples capability of rCharts after a little bit of tweaking of the js code.  I hope the <code>facet = list(x = &quot;variable&quot;)</code> is simple enough, but soon I think <code>rCharts</code> will have a <code>facet</code> command to make it even easier.</p>
+
+<pre><code class="r">#example of facetting
+
+#let&#39;s add the HID to demo facets
+r2 &lt;- ranef(m3a, which = &quot;HID&quot;, postVar = TRUE)$HID
+#use our data frame dfForPlot as our starting point
+dfForFacetPlot &lt;- dfForPlot
+#add another column variable
+dfForFacetPlot$variable = &quot;DID&quot;
+#combine the HID with DID to get long form(molten) data.frame
+dfForFacetPlot &lt;- rbind(
+  dfForFacetPlot,
+  data.frame(list(
+    id = rownames(r2),  #this will be our x
+    intercept = r2[,1],            #this will be our y
+    se = as.numeric(attr( r2, &quot;postVar&quot; )),  #this will be our se
+    variable = rep(&quot;HID&quot;, nrow(r2))
+  ))
+)
+
+ePlotFacet &lt;- rCharts$new()
+ePlotFacet$setLib(path)
+ePlotFacet$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
+ePlotFacet$params =   list(
+  data = dfForFacetPlot,
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = &quot;id&quot;,
+  y = &quot;intercept&quot;,
+  color = &quot;id&quot;,
+  radius = 4,
+  sort = list( var = &quot;intercept&quot; ),
+  whiskers = &quot;#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#&quot;,
+  tooltipLabels = c(&quot;id&quot;,&quot;intercept&quot;,&quot;se&quot;),
+  facet = list(x = &quot;variable&quot;)  #add y for facet grid
+)
+ePlotFacet
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-5.html seamless></iframe>
+
+<h3>Thanks</h3>
+
+<p>As you can hopefully tell, I depended heavily on lots of folks to write this little post.  Thanks to:<br>
+1. <a href="http://github.com/ramnathv">Ramnath Vaidyanathan</a> - <a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a><br>
+2. <a href="http://cpsievert.github.io/">Carson Sievert</a> - <a href="https://twitter.com/cpsievert">@cpsievert</a><br>
+2. <a href="http://dillingham.me.uk/">Iain Dillingham</a><br>
+3. <a href="http://www.ats.ucla.edu/stat/">UCLA: Statistical Consulting Group</a><br>
+4. <a href="http://cran.r-project.org/web/packages/lme4/index.html"><code>lme4</code>  Team</a><br>
+5. <a href="http://bost.ocks.org/mike/">Mike Bostock</a><br>
+6. Everybody else that has contributed R and d3 examples online. I probably have looked at them.</p>
+
+    </div>
+        
+</body>
+  <script src="libraries/frameworks/bootstrap/js/vendor/bootstrap.min.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/plugins.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/main.js"></script>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

@@ -1,0 +1,239 @@
+---
+title: rCharts Custom | Cancer, Fantasy Football, and Three Level Mixed Effects Logistic Regression
+author: Timely Portfolio
+github: {user: timelyportfolio, repo: rCharts_systematic_cluster, branch: "gh-pages"}
+framework: bootstrap
+mode: selfcontained
+highlighter: prettify
+hitheme: twitter-bootstrap
+assets:
+  css:
+  - "http://fonts.googleapis.com/css?family=Raleway:300"
+  - "http://fonts.googleapis.com/css?family=Oxygen"
+---
+  
+<style>
+iframe{
+  height:550px;
+  width:1000px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+  font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+  background-color: #D4DAEC;
+    text-indent: 100px; 
+}
+
+h4 {
+  text-indent: 100px;
+}
+</style>
+  
+<a href="https://github.com/timelyportfolio/rCharts_errorbar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+# Cancer, Fantasy Football, and Three Level Mixed Effects Logistic Regression
+
+
+
+
+### Just a Little Tweet
+This circuitous journey all started with a little tweet.
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a> <a href="https://twitter.com/timelyportfolio">@timelyportfolio</a> are there any examples out there that demonstrate how to add error bars to points with rCharts?</p>&mdash; Carson Sievert (@cpsievert) <a href="https://twitter.com/cpsievert/statuses/376463522433339392">September 7, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+I started exploring how `rCharts` could make error bars, and I came up with 3 fine examples courtesy of this tweet
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/vgoklani">@vgoklani</a> <a href="https://twitter.com/timelyportfolio">@timelyportfolio</a> <a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a> <a href="https://twitter.com/nachocaballero">@nachocaballero</a> Some ideas <a href="http://t.co/wHIHxD5ybx">http://t.co/wHIHxD5ybx</a> <a href="http://t.co/DLKNg2KCac">http://t.co/DLKNg2KCac</a> <a href="http://t.co/y0wNv753qw">http://t.co/y0wNv753qw</a></p>&mdash; Christophe Viau (@d3visualization) <a href="https://twitter.com/d3visualization/statuses/347505203236454401">June 20, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+For the original use which I later found out would be fantasy football rankings, I thought this [quartile plot](http://bl.ocks.org/iaindillingham/5068071) would work nicely.  I went to work making changes to the quartile plot so that it would play well with `rCharts` and also allow small multiples or facets.
+
+### And Another Little Tweet
+Then this morning another tweet.
+
+<blockquote class="twitter-tweet"><p>The UCLA Stats consulting website is a gift that keeps on giving. Great primer on mixed effects logit in <a href="https://twitter.com/search?q=%23rstats&amp;src=hash">#rstats</a> <a href="http://t.co/0ZyUNj742i">http://t.co/0ZyUNj742i</a></p>&mdash; hjms (@hjms) <a href="https://twitter.com/hjms/statuses/383547993548275712">September 27, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+and at the end of that very good tutorial I found a lattice `dotplot` that when flipped looked remarkably similar to my d3 errorbar.
+
+R code from this [fine article](http://www.ats.ucla.edu/stat/r/dae/melogit.htm)
+<blockquote>
+    UCLA: Statistical Consulting Group
+    R Data Analysis Examples: Mixed Effects Logistic Regression
+    http://www.ats.ucla.edu/stat/r/dae/melogit.htm
+    Accessed 9/27/2013
+</blockquote>
+
+
+```r
+#require(ggplot2)
+#require(GGally)
+require(reshape2)
+require(lme4)
+#require(compiler)
+#require(parallel)
+#require(boot)
+
+hdp <- read.csv("http://www.ats.ucla.edu/stat/data/hdp.csv")
+hdp <- within(hdp, {
+  Married <- factor(Married, levels = 0:1, labels = c("no", "yes"))
+  DID <- factor(DID)
+  HID <- factor(HID)
+})
+
+
+# estimate the model and store results in m
+m3a <- glmer(remission ~ Age + LengthofStay + FamilyHx + IL6 + CRP +
+  CancerStage + Experience + (1 | DID) + (1 | HID),
+  data = hdp, family = binomial, nAGQ=1)
+
+# print the mod results without correlations among fixed effects
+# print(m3a, corr=FALSE)
+
+dP <- dotplot(
+  ranef(m3a, which = "DID", postVar = TRUE),
+  scales = list(y = list(alternating = 0))
+)
+print(dP)
+```
+
+$DID
+![plot of chunk unnamed-chunk-2](assets/fig/unnamed-chunk-2.png) 
+
+
+It looked so close that I just had to try to replicate it.  I scrambled to scrape the surface of Three Level Mixed Effects Logistic Regression just enough to extricate the data needed for the plot.  I dug into the `str` of the lattice plot and examined the [source code from `lme4`](https://github.com/lme4/lme4/blob/bf060a61168499d314b6248da8b2dc468e3af3c9/R/lmer.R#L2190).
+
+This little bit of code gets the data that we will need to plot.
+
+
+```r
+## back into the x, y, and errorbar components by looking at
+## both the structure of the dotplot and also the lme4 source
+## https://github.com/lme4/lme4/blob/bf060a61168499d314b6248da8b2dc468e3af3c9/R/lmer.R#L2190
+# str(dP)
+## dP$DID$panel.args.common gives us the dotplot se which will be our error portion
+## looking at the source from lme4 we get by using attr
+##    attr(ranef(m3a, which = "DID", postVar = TRUE)$DID,"postVar")
+## dP$DID$panel.args$x or sort(ranef(m3a, which = "DID", postVar = TRUE)$DID[,1]) will be our y
+## dP$DID$panel.args$y or just the index will serve as our x
+
+## now that we know our x, y, and errorbar
+## make a data.frame that we will use with rCharts
+
+r <- ranef(m3a, which = "DID", postVar = TRUE)$DID
+dfForPlot <- data.frame(
+  rownames(r),  #this will be our x
+  r[,1],            #this will be our y
+  as.numeric(attr( r, "postVar" ))  #this will be our se
+)
+colnames(dfForPlot) <- c("id","intercept","se")
+```
+
+
+
+### d3-ify in R with rCharts
+
+I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.
+
+
+
+```r
+## using very experimental version of rCharts
+## require(devtools)
+## install_github("rCharts", "timelyportfolio", ref = "test-speedimprove")
+require(rCharts)
+
+#set working directory to a local and change setLib and templates$script
+#if going to github gh-pages repo not desired
+path = "http://timelyportfolio.github.io/rCharts_errorbar"
+#path = getwd()
+ePlot <- rCharts$new()
+ePlot$setLib(path)
+ePlot$templates$script = paste0(path,"/layouts/chart.html")
+#not the way Ramnath intended but we'll hack away
+ePlot$params =  list(
+  data = dfForPlot,
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = "id",
+  y = "intercept",
+  radius = 4,
+  sort = list( var = "intercept" ),
+  whiskers = "#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#",
+  tooltipLabels = c("id","intercept","se") 
+)
+ePlot
+```
+
+<iframe src=assets/fig/unnamed-chunk-4.html seamless></iframe>
+
+
+And since we are spoiled in R by facets in `ggplot2` and strips in `lattice`, I just have to demo the small multiples capability of rCharts after a little bit of tweaking of the js code.  I hope the `facet = list(x = "variable")` is simple enough, but soon I think `rCharts` will have a `facet` command to make it even easier.
+
+
+```r
+#example of facetting
+
+#let's add the HID to demo facets
+r2 <- ranef(m3a, which = "HID", postVar = TRUE)$HID
+#use our data frame dfForPlot as our starting point
+dfForFacetPlot <- dfForPlot
+#add another column variable
+dfForFacetPlot$variable = "DID"
+#combine the HID with DID to get long form(molten) data.frame
+dfForFacetPlot <- rbind(
+  dfForFacetPlot,
+  data.frame(list(
+    id = rownames(r2),  #this will be our x
+    intercept = r2[,1],            #this will be our y
+    se = as.numeric(attr( r2, "postVar" )),  #this will be our se
+    variable = rep("HID", nrow(r2))
+  ))
+)
+
+ePlotFacet <- rCharts$new()
+ePlotFacet$setLib(path)
+ePlotFacet$templates$script = paste0(path,"/layouts/chart.html")
+ePlotFacet$params =   list(
+  data = dfForFacetPlot,
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = "id",
+  y = "intercept",
+  color = "id",
+  radius = 4,
+  sort = list( var = "intercept" ),
+  whiskers = "#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#",
+  tooltipLabels = c("id","intercept","se"),
+  facet = list(x = "variable")  #add y for facet grid
+)
+ePlotFacet
+```
+
+<iframe src=assets/fig/unnamed-chunk-5.html seamless></iframe>
+
+
+### Thanks
+As you can hopefully tell, I depended heavily on lots of folks to write this little post.  Thanks to:    
+1. [Ramnath Vaidyanathan](http://github.com/ramnathv) - [@ramnath_vaidya](https://twitter.com/ramnath_vaidya)    
+2. [Carson Sievert](http://cpsievert.github.io/) - [@cpsievert](https://twitter.com/cpsievert)    
+2. [Iain Dillingham](http://dillingham.me.uk/)    
+3. [UCLA: Statistical Consulting Group](http://www.ats.ucla.edu/stat/)    
+4. [`lme4`  Team](http://cran.r-project.org/web/packages/lme4/index.html)    
+5. [Mike Bostock](http://bost.ocks.org/mike/)    
+6. Everybody else that has contributed R and d3 examples online. I probably have looked at them.
