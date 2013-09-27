@@ -49,7 +49,13 @@ d3.svg.errorbar = function () {
       }));
 
       yScale.domain(
-        [0, d3.max(data, function (d) {
+        //[0, d3.max(data, function (d) {
+        //  return whiskersAccessor(d)[1];
+        //})]
+        [d3.min(data, function (d) {
+          return whiskersAccessor(d)[0];
+        }),
+        d3.max(data, function (d) {
           return whiskersAccessor(d)[1];
         })]
       );

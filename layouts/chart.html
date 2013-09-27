@@ -15,17 +15,12 @@
        debugger;
       (function(){
         var opts = {{{ chartParams }}};
-        //var margin = {{{ margin }}},
-        //  width = {{{ width }}} - margin.left - margin.right,
-        // height = {{{  }}} - margin.top - margin.bottom;
 
         var color = d3.scale.category20();
 
         var svg = d3.select("body").append("svg")
             .attr("width", opts.width)
             .attr("height", opts.height)
-
-        //d3.json("fantasy.json", function (error, data) {
 
           if(!(opts.margin)) opts.margin = { top: 10, right: 50, bottom: 20, left: 50 }
 
