@@ -9,13 +9,18 @@ d3.svg.errorbar = function () {
       width = 600,
       xVar = "x",
       yVar = "y",
-      stddev = "stddev",
-      sdmult = 1.96;
+      colorVar = null,
+      color = d3.scale.category20(),
+      radius = 2,
+      whiskersAccessor = null,
+      sort = null,
+      tooltipLabels = [];
 
   function errorbar(selection) {
 
     var xScale = d3.scale.ordinal()
-        .rangePoints([0, width], 1);
+      .rangePoints([0, width], 1)
+      //.rangeRoundBands([0, width], 0.08);
 
     var yScale = d3.scale.linear()
         .range([height, 0]);
@@ -27,23 +32,33 @@ d3.svg.errorbar = function () {
         .scale(yScale)
         .orient("left");
 
-    var color = d3.scale.category20();
-
     selection.each(function (data, index) {
       var element = d3.select(this);
+
+      data = data.values;
+
       //sort if desired
-      //data.sort(function (a, b) {
-        //return d3.descending(a.rank, b.rank);
-      //  return d3.descending(a[yVar], b[yVar]);
-      //});
+      if(sort) {
+        data.sort(function (a, b) {
+          return d3[sort.order?sort.order:"ascending"](a[sort.var], b[sort.var]);
+        });
+      }
 
       xScale.domain(data.map(function (d) {
-        return d[xVar];
+        return d[xVar]// + "~" + d.ppr;
       }));
 
-      yScale.domain(d3.extent(data, function (d) {
-        return d[yVar];
-      }))
+      yScale.domain(
+        //[0, d3.max(data, function (d) {
+        //  return whiskersAccessor(d)[1];
+        //})]
+        [d3.min(data, function (d) {
+          return whiskersAccessor(d)[0];
+        }),
+        d3.max(data, function (d) {
+          return whiskersAccessor(d)[1];
+        })]
+      );
 
       var errorbars = element.selectAll("g").data(data);
 
@@ -59,11 +74,11 @@ d3.svg.errorbar = function () {
         errorbar.selectAll(".lower").data(errorbar.data())
           .enter().append("line")
             .attr("class", "lower")
-            .attr("x1", function (d) { return xScale(d[xVar]); })
+            .attr("x1", function (d, i) { return xScale(d[xVar]); })
             .attr("y1", function (d) { return yScale(d[yVar]); })
-            .attr("x2", function (d) { return xScale(d[xVar]); })
+            .attr("x2", function (d, i) { return xScale(d[xVar]) })
             .attr("y2", function (d) {
-              return yScale(+d[yVar] - (sdmult * d[stddev]));
+              return yScale(whiskersAccessor(d)[0]);
             })
             .attr("stroke", "rgb(151, 146, 146)");
         //now the upper line
@@ -74,7 +89,7 @@ d3.svg.errorbar = function () {
             .attr("y1", function (d) { return yScale(d[yVar]); })
             .attr("x2", function (d) { return xScale(d[xVar]); })
             .attr("y2", function (d) {
-              return yScale(+d[yVar] + (1.96 * d[stddev]));
+              return yScale(whiskersAccessor(d)[1]);
             })
             .attr("stroke", "rgb(151, 146, 146)");
         //draw points last so they go on top
@@ -82,70 +97,168 @@ d3.svg.errorbar = function () {
           .enter().append("circle")
             .attr("class", "points")
             .attr("cx", function (d) {
-              return xScale(d[xVar])
+              return xScale(d[xVar]);
             })
             .attr("cy", function (d) {
               return yScale(d[yVar])
             })
-            .attr("fill", function (d) { return color(d.category) })
-            .attr("r", 2); //radius parameter
+            .attr("fill", function (d) { return color(d[colorVar]) })
+            .attr("r", radius); //radius parameter
       });
+
+      /* could add x axis but for specific first purpose no room
+      element.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      */
+
+      element.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+      var focus = element.append("g")
+        .attr("class", "focus")
+        .style("display", "none")
+      //.attr("stroke", "black");
+      //.attr("stroke", "rgb(0,82,109)");
+
+      focus.append("circle")
+          .attr("r", 4.5)
+          .attr("fill", "black"); //"rgb(0,82,109)");
+
+      var focustext = focus.selectAll('.focustext').data(tooltipLabels)
+      
+      //handle enter
+      focustext.enter().append("text")
+          .attr("class", "focustext")
+
+      //handle update
+      focustext
+          .attr("x", 9)
+          .attr("y", function(d,i){ return i * 14})
+          .attr("dy", ".35em")
+          .attr("font-size", 12)
+          .attr("font-color", "black")
+          .attr("fill", "black")
+          .attr("fill-opacity", 1);
+      //.attr("stroke", "rgb(0,82,109)")
+      //.attr("stroke-opacity", 1);
+
+      //handle exit
+      focustext.exit().remove();
+
+      element.append("rect")
+          .attr("class", "overlay")
+      //.attr("x", element.attr("x"))
+      //.attr("y", element.attr("y"))
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "none")
+          .attr("stroke", "none")
+          .attr("pointer-events", "all")
+          .on("mouseover", function () { focus.style("display", null); })
+          .on("mouseout", function () {
+            focus.style("display", "none");
+          })
+          .on("mousemove", mousemove);
+
+      var bisectX = d3.bisector(function (d) {
+        return +xScale(d[xVar]);
+      }).left;
+
+      function mousemove() {
+        var x0 = d3.mouse(this)[0];
+        var i = bisectX(d3.select(this).data()[0].values, x0, 1);
+        var d;
+        d = d3.select(this).data()[0].values[i - 1];
+        focus.attr("transform", "translate(" + xScale(d[xVar]) + "," + yScale(d[yVar]) + ")");
+        focus.selectAll(".focustext")
+          .text(function(dd) {
+             return dd + ": " + d[dd];
+          })
+          .attr("fill", color(d[colorVar]));
+      }
 
     });
 
   }
 
-  errorbar.xPos = function(_) {
-   if (!arguments.length) return xPos;
+  errorbar.xPos = function (_) {
+    if (!arguments.length) return xPos;
     xPos = _;
     return errorbar;
   };
 
-  errorbar.yPos = function(_) {
-   if (!arguments.length) return yPos;
+  errorbar.yPos = function (_) {
+    if (!arguments.length) return yPos;
     yPos = _;
     return errorbar;
   };
 
-  errorbar.margin = function(_) {
+  errorbar.margin = function (_) {
     if (!arguments.length) return margin;
     margin = _;
     return errorbar;
   };
 
-  errorbar.height = function(_) {
-   if (!arguments.length) return height;
+  errorbar.height = function (_) {
+    if (!arguments.length) return height;
     height = _;
     return errorbar;
   };
 
-  errorbar.width = function(_) {
-   if (!arguments.length) return width;
+  errorbar.width = function (_) {
+    if (!arguments.length) return width;
     width = _;
     return errorbar;
   };
 
-  errorbar.xVar = function(_) {
+  errorbar.xVar = function (_) {
     if (!arguments.length) return xVar;
     xVar = _;
     return errorbar;
   };
 
-  errorbar.yVar= function(_) {
-   if (!arguments.length) return yVar;
+  errorbar.yVar = function (_) {
+    if (!arguments.length) return yVar;
     yVar = _;
     return errorbar;
   };
 
-  errorbar.sttdev= function(_) {
-   if (!arguments.length) return stddev;
-    stddev = _;
+  errorbar.colorVar = function (_) {
+    if (!arguments.length) return colorVar;
+    colorVar = _;
     return errorbar;
   };
 
-  errorbar.sdmult= function(_) {
-   if (!arguments.length) return sdmult;
-    sdmult = _;
+  errorbar.color = function (_) {
+    if (!arguments.length) return color ? color.call(this) : color;
+    color = d3.functor(_);
+    return errorbar;
+  }
+
+  errorbar.radius = function (_) {
+    if (!arguments.length) return radius;
+    radius = _;
+    return errorbar;
+  };
+
+  errorbar.whiskers = function (_) {
+    if (!arguments.length) return whiskersAccessor;
+    whiskersAccessor = _;
+    return errorbar;
+  };
+
+  errorbar.sort = function (_) {
+    if (!arguments.length) return sort;
+    sort = _;
+    return errorbar;
+  };
+
+  errorbar.tooltipLabels = function (_) {
+    if (!arguments.length) return tooltipLabels;
+    tooltipLabels = _;
     return errorbar;
   };
 
