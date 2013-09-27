@@ -171,7 +171,7 @@ ePlot$params =  list(
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = "id",
   y = "intercept",
-  radius = 4,
+  radius = 2,
   sort = list( var = "intercept" ),
   whiskers = "#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#",
   tooltipLabels = c("id","intercept","se") 
