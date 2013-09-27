@@ -194,6 +194,7 @@ dfForFacetPlot <- rbind(
     variable = rep("HID", nrow(r2))
   ))
 )
+dfForFacetPlot$idcolor = floor(as.numeric(levels(dfForFacetPlot$id)[dfForFacetPlot$id])/10)
 
 ePlotFacet <- rCharts$new()
 ePlotFacet$setLib(path)
@@ -205,7 +206,7 @@ ePlotFacet$params =   list(
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = "id",
   y = "intercept",
-  color = "id",
+  color = "idcolor",
   radius = 4,
   sort = list( var = "intercept" ),
   whiskers = "#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#",

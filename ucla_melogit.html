@@ -229,6 +229,7 @@ dfForFacetPlot &lt;- rbind(
     variable = rep(&quot;HID&quot;, nrow(r2))
   ))
 )
+dfForFacetPlot$idcolor = floor(as.numeric(levels(dfForFacetPlot$id)[dfForFacetPlot$id])/10)
 
 ePlotFacet &lt;- rCharts$new()
 ePlotFacet$setLib(path)
@@ -240,7 +241,7 @@ ePlotFacet$params =   list(
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = &quot;id&quot;,
   y = &quot;intercept&quot;,
-  color = &quot;id&quot;,
+  color = &quot;idcolor&quot;,
   radius = 4,
   sort = list( var = &quot;intercept&quot; ),
   whiskers = &quot;#!function(d){return [d.intercept - 1.96 * d.se, d.intercept + 1.96 * d.se]}!#&quot;,
