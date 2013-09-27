@@ -8,9 +8,9 @@
 #require(GGally)
 require(reshape2)
 require(lme4)
-require(compiler)
-require(parallel)
-require(boot)
+#require(compiler)
+#require(parallel)
+#require(boot)
 
 hdp <- read.csv("http://www.ats.ucla.edu/stat/data/hdp.csv")
 hdp <- within(hdp, {
