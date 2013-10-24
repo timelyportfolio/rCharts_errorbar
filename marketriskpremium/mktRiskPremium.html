@@ -80,9 +80,13 @@ h4 {
 
 <h1>rCharts Error Bar of Equity Risk Premium Survey</h1>
 
-<p>One of my favorite surveys from academic research on finance is an international survey on market risk premium.</p>
+<p>One of my favorite surveys from academic research on finance is an international survey on market risk premium run by the <a href="http://www.iese.edu/">IESE Business School at the University of Navarra</a>.  Even though I look at it occasionally every year, I never noticed the error bar plot.</p>
 
-<h3>Attribution for Data</h3>
+<p><img src="figurefrompaper.png" alt="Error Bar from Paper"></p>
+
+<p>This looks remarkably similar to a custom error bar d3 plot that I implemented for <a href="http://rcharts.io">rCharts</a>.  I guess there are a few of these in the wild.  See <a href="http://timelyportfolio.blogspot.com/2013/09/long-winding-road-marked-with-error.html">Long Winding Road Marked with Error Bars and Tweets</a> for another example.  I just could not resist making this interactive.</p>
+
+<h3>Data</h3>
 
 <p>All data came from this <a href="http://ssrn.com/abstract=91416">fine article</a>, so attribution and credit should be entirely directed there.
 <address style="font-size:70%;"><strong>Market Risk Premium and Risk Free Rate Used for 51 Countries in 2013</strong><br>
@@ -95,7 +99,7 @@ A Survey with 6,237 Answers<p class="muted">Fernandez, Pablo and Aguirreamalloa,
 mrp &lt;- read.csv(&quot;ssrn-id914160.csv&quot;,stringsAsFactors=F)
 </code></pre>
 
-<h3>d3-ify in R with rCharts</h3>
+<h3>Interactive Error Bar with d3 and rCharts</h3>
 
 <p>I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.</p>
 
