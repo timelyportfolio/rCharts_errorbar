@@ -11,10 +11,6 @@ assets:
   css:
   - "http://fonts.googleapis.com/css?family=Raleway:300"
   - "http://fonts.googleapis.com/css?family=Oxygen"
-  js:
-  - "../js/d3.v3.js"
-  - "../js/errorbar.js"
-  - "../js/d3-grid.js"
 ---
   
 <style>
@@ -130,7 +126,7 @@ ePlotFacet$params =   list(
   radius = 4,
   sort = list( var = "mean" ),
   whiskers = "#!function(d){return [d.mean - 1.96 * d.sd, d.mean + 1.96 * d.sd]}!#",
-  tooltipLabels = c("Country","mean","sd"),
+  tooltipLabels = c("Country","variable","mean","sd"),
   facet = list(y = "variable")  #add y for facet grid
 )
 ePlotFacet

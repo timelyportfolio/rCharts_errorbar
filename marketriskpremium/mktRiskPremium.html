@@ -149,7 +149,7 @@ ePlotFacet$params =   list(
   radius = 4,
   sort = list( var = &quot;mean&quot; ),
   whiskers = &quot;#!function(d){return [d.mean - 1.96 * d.sd, d.mean + 1.96 * d.sd]}!#&quot;,
-  tooltipLabels = c(&quot;Country&quot;,&quot;mean&quot;,&quot;sd&quot;),
+  tooltipLabels = c(&quot;Country&quot;,&quot;variable&quot;,&quot;mean&quot;,&quot;sd&quot;),
   facet = list(y = &quot;variable&quot;)  #add y for facet grid
 )
 ePlotFacet
@@ -174,10 +174,7 @@ ePlotFacet
   <script src="../libraries/frameworks/bootstrap/js/plugins.js"></script>
   <script src="../libraries/frameworks/bootstrap/js/main.js"></script>
   <!-- Load Javascripts for Widgets -->
-  <script src="../js/d3.v3.js"></script>
-<script src="../js/errorbar.js"></script>
-<script src="../js/d3-grid.js"></script>
-
+  
   <!-- Google Prettify -->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
   <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
