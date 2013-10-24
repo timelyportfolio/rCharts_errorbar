@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>rCharts Custom | Market Risk Premium Error Bar</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <style>
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+  </style>
+  
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+<link  rel="stylesheet" 
+    href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css">
+  <link rel="stylesheet" href="../libraries/frameworks/bootstrap/css/bootstrap-responsive.min.css">
+  
+  <link rel="stylesheet" href="../libraries/frameworks/bootstrap/css/main.css">
+  <link rel="stylesheet" href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" />
+  <script src="../libraries/frameworks/bootstrap/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="../libraries/frameworks/bootstrap/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+    <link rel=stylesheet href="http://fonts.googleapis.com/css?family=Raleway:300"></link>
+<link rel=stylesheet href="http://fonts.googleapis.com/css?family=Oxygen"></link>
+
+  
+</head>
+<body>
+   <!--[if lt IE 7]>
+     <p class="chromeframe">You are using an outdated browser. 
+       <a href="http://browsehappy.com/">Upgrade your browser today</a> or 
+       <a href="http://www.google.com/chromeframe/?redirect=true"> 
+         install Google Chrome Frame
+       </a> to better experience this site.
+    </p>
+   <![endif]-->
+   <!-- Ref: http://twitter.github.com/bootstrap/examples/hero.html -->
+   
+    <div class="container">
+      
+<style>
+iframe{
+  height:550px;
+  width:1000px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+  font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+  background-color: #D4DAEC;
+    text-indent: 100px; 
+}
+
+h4 {
+  text-indent: 100px;
+}
+</style>
+  
+
+<p><a href="https://github.com/timelyportfolio/rCharts_errorbar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a></p>
+
+<h1>rCharts Error Bar of Equity Risk Premium Survey</h1>
+
+<p>One of my favorite surveys from academic research on finance is an international survey on market risk premium.</p>
+
+<h3>Attribution for Data</h3>
+
+<p>All data came from this <a href="http://ssrn.com/abstract=91416">fine article</a>, so attribution and credit should be entirely directed there.
+<address style="font-size:70%;"><strong>Market Risk Premium and Risk Free Rate Used for 51 Countries in 2013</strong><br>
+A Survey with 6,237 Answers<p class="muted">Fernandez, Pablo and Aguirreamalloa, Javier and Linares, Pablo<br>June 26, 2013<br>Available at SSRN: <a href="http://ssrn.com/abstract=91416">http://ssrn.com/abstract=91416</a></p>
+</address></p>
+
+<p>I did a little copy/paste magic from pdf into Excel and then saved it as a .csv file.  With R, we will read it with the following line of code.</p>
+
+<pre><code class="r"># data source: http://ssrn.com/abstract=91416
+mrp &lt;- read.csv(&quot;ssrn-id914160.csv&quot;,stringsAsFactors=F)
+</code></pre>
+
+<h3>d3-ify in R with rCharts</h3>
+
+<p>I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.</p>
+
+<pre><code class="r">## using very experimental version of rCharts
+## require(devtools)
+## install_github(&quot;rCharts&quot;, &quot;timelyportfolio&quot;, ref = &quot;test-speedimprove&quot;)
+require(rCharts)
+
+#set working directory to a local and change setLib and templates$script
+#if going to github gh-pages repo not desired
+#path = &quot;http://timelyportfolio.github.io/rCharts_errorbar&quot;
+path = &quot;..&quot;
+ePlot &lt;- rCharts$new()
+ePlot$setLib(path)
+
+ePlot$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
+#not the way Ramnath intended but we&#39;ll hack away
+ePlot$params =  list(
+  data = subset(mrp,variable==&quot;mrp&quot;),
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = &quot;Country&quot;,
+  y = &quot;mean&quot;,
+  radius = 2,
+  sort = list( var = &quot;mean&quot; ),
+  whiskers = &quot;#!function(d){return [d.mean - 1.96 * d.sd, d.mean + 1.96 * d.sd]}!#&quot;,
+  tooltipLabels = c(&quot;Country&quot;,&quot;mean&quot;,&quot;sd&quot;) 
+)
+ePlot
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-3.html seamless></iframe>
+
+<pre><code class="r">#example of facetting
+ePlotFacet &lt;- rCharts$new()
+ePlotFacet$setLib(path)
+ePlotFacet$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
+ePlotFacet$params =   list(
+  data = mrp,
+  height = 500,
+  width = 1000,
+  margin = list(top = 10, bottom = 10, right = 50, left = 100),
+  x = &quot;Country&quot;,
+  y = &quot;mean&quot;,
+  color = &quot;Country&quot;,
+  radius = 4,
+  sort = list( var = &quot;mean&quot; ),
+  whiskers = &quot;#!function(d){return [d.mean - 1.96 * d.sd, d.mean + 1.96 * d.sd]}!#&quot;,
+  tooltipLabels = c(&quot;Country&quot;,&quot;mean&quot;,&quot;sd&quot;),
+  facet = list(y = &quot;variable&quot;)  #add y for facet grid
+)
+ePlotFacet
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-4.html seamless></iframe>
+
+<h3>Thanks</h3>
+
+<p>As you can hopefully tell, I depended heavily on lots of folks to write this little post.  Thanks to:<br>
+1. <a href="http://github.com/ramnathv">Ramnath Vaidyanathan</a> - <a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a><br>
+2. <a href="http://cpsievert.github.io/">Carson Sievert</a> - <a href="https://twitter.com/cpsievert">@cpsievert</a><br>
+2. <a href="http://dillingham.me.uk/">Iain Dillingham</a><br>
+4. <a href="http://fillintheblank.com">missing link</a><br>
+5. <a href="http://bost.ocks.org/mike/">Mike Bostock</a><br>
+6. Everybody else that has contributed R and d3 examples online. I probably have looked at them.</p>
+
+    </div>
+        
+</body>
+  <script src="../libraries/frameworks/bootstrap/js/vendor/bootstrap.min.js"></script>
+  <script src="../libraries/frameworks/bootstrap/js/plugins.js"></script>
+  <script src="../libraries/frameworks/bootstrap/js/main.js"></script>
+  <!-- Load Javascripts for Widgets -->
+  <script src="../js/d3.v3.js"></script>
+<script src="../js/errorbar.js"></script>
+<script src="../js/d3-grid.js"></script>
+
+  <!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
