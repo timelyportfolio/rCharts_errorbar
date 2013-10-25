@@ -15,8 +15,8 @@ assets:
   
 <style>
 iframe{
-  height:550px;
-  width:1000px;
+  height:530px;
+  width:940px;
   margin:auto auto;
 }
 
@@ -30,7 +30,7 @@ h1,h2,h3,h4 {
   font-family: 'Raleway', sans-serif;
 }
 
-.container { width: 900px; }
+.container { width: 950px; }
 
 h3 {
   background-color: #D4DAEC;
@@ -50,10 +50,12 @@ h4 {
 
 
 One of my favorite surveys from academic research on finance is an international survey on market risk premium run by the [IESE Business School at the University of Navarra](http://www.iese.edu/).  Even though I look at it occasionally every year, I never noticed the error bar plot.
-
+<br><br>
 ![Error Bar from Paper](figurefrompaper.png)
+<br><br>
+This looks remarkably similar to a custom error bar d3 plot that I implemented for [rCharts](http://rcharts.io).  I guess there are a few of these in the wild.  See [Long Winding Road Marked with Error Bars and Tweets](http://timelyportfolio.blogspot.com/2013/09/long-winding-road-marked-with-error.html) for one example and this [NY Times Article](http://www.nytimes.com/2013/10/11/sports/football/turning-advanced-statistics-into-fantasy-football-analysis.html?ref=football&_r=0) for another.
 
-This looks remarkably similar to a custom error bar d3 plot that I implemented for [rCharts](http://rcharts.io).  I guess there are a few of these in the wild.  See [Long Winding Road Marked with Error Bars and Tweets](http://timelyportfolio.blogspot.com/2013/09/long-winding-road-marked-with-error.html) for another example.  I just could not resist making this interactive.
+I just could not resist making this error bar plot of market risk premium interactive.
 
 ### Data
 All data came from this [fine article](http://ssrn.com/abstract=91416), so attribution and credit should be entirely directed there.
@@ -73,7 +75,7 @@ mrp <- read.csv("ssrn-id914160.csv",stringsAsFactors=F)
 
 ### Interactive Error Bar with d3 and rCharts
 
-I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.
+This is still just a sketch, but I think it offers a very good proof of concept.
 
 
 ```r
@@ -94,7 +96,7 @@ ePlot$templates$script = paste0(path,"/layouts/chart.html")
 ePlot$params =  list(
   data = subset(mrp,variable=="mrp"),
   height = 500,
-  width = 1000,
+  width = 900,
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = "Country",
   y = "mean",
@@ -118,7 +120,7 @@ ePlotFacet$templates$script = paste0(path,"/layouts/chart.html")
 ePlotFacet$params =   list(
   data = mrp,
   height = 500,
-  width = 1000,
+  width = 900,
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = "Country",
   y = "mean",
@@ -140,7 +142,7 @@ As you can hopefully tell, I depended heavily on lots of folks to write this lit
 1. [Ramnath Vaidyanathan](http://github.com/ramnathv) - [@ramnath_vaidya](https://twitter.com/ramnath_vaidya)    
 2. [Carson Sievert](http://cpsievert.github.io/) - [@cpsievert](https://twitter.com/cpsievert)    
 2. [Iain Dillingham](http://dillingham.me.uk/)    
-4. [missing link](http://fillintheblank.com)    
+4. [Fernandez, Pablo and Aguirreamalloa, Javier and Linares, Pablo](http://ssrn.com/abstract=91416)    
 5. [Mike Bostock](http://bost.ocks.org/mike/)    
 6. Everybody else that has contributed R and d3 examples online. I probably have looked at them.
 

@@ -48,8 +48,8 @@
       
 <style>
 iframe{
-  height:550px;
-  width:1000px;
+  height:530px;
+  width:940px;
   margin:auto auto;
 }
 
@@ -63,7 +63,7 @@ h1,h2,h3,h4 {
   font-family: 'Raleway', sans-serif;
 }
 
-.container { width: 900px; }
+.container { width: 950px; }
 
 h3 {
   background-color: #D4DAEC;
@@ -80,11 +80,13 @@ h4 {
 
 <h1>rCharts Error Bar of Equity Risk Premium Survey</h1>
 
-<p>One of my favorite surveys from academic research on finance is an international survey on market risk premium run by the <a href="http://www.iese.edu/">IESE Business School at the University of Navarra</a>.  Even though I look at it occasionally every year, I never noticed the error bar plot.</p>
+<p>One of my favorite surveys from academic research on finance is an international survey on market risk premium run by the <a href="http://www.iese.edu/">IESE Business School at the University of Navarra</a>.  Even though I look at it occasionally every year, I never noticed the error bar plot.
+<br><br>
+<img src="figurefrompaper.png" alt="Error Bar from Paper">
+<br><br>
+This looks remarkably similar to a custom error bar d3 plot that I implemented for <a href="http://rcharts.io">rCharts</a>.  I guess there are a few of these in the wild.  See <a href="http://timelyportfolio.blogspot.com/2013/09/long-winding-road-marked-with-error.html">Long Winding Road Marked with Error Bars and Tweets</a> for one example and this <a href="http://www.nytimes.com/2013/10/11/sports/football/turning-advanced-statistics-into-fantasy-football-analysis.html?ref=football&amp;_r=0">NY Times Article</a> for another.</p>
 
-<p><img src="figurefrompaper.png" alt="Error Bar from Paper"></p>
-
-<p>This looks remarkably similar to a custom error bar d3 plot that I implemented for <a href="http://rcharts.io">rCharts</a>.  I guess there are a few of these in the wild.  See <a href="http://timelyportfolio.blogspot.com/2013/09/long-winding-road-marked-with-error.html">Long Winding Road Marked with Error Bars and Tweets</a> for another example.  I just could not resist making this interactive.</p>
+<p>I just could not resist making this error bar plot of market risk premium interactive.</p>
 
 <h3>Data</h3>
 
@@ -101,7 +103,7 @@ mrp &lt;- read.csv(&quot;ssrn-id914160.csv&quot;,stringsAsFactors=F)
 
 <h3>Interactive Error Bar with d3 and rCharts</h3>
 
-<p>I never thought I would say this, but the d3/rCharts piece is actually the easiest.  Just specify a couple of parameters, and we have an interactive error bar plot.</p>
+<p>This is still just a sketch, but I think it offers a very good proof of concept.</p>
 
 <pre><code class="r">## using very experimental version of rCharts
 ## require(devtools)
@@ -120,7 +122,7 @@ ePlot$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
 ePlot$params =  list(
   data = subset(mrp,variable==&quot;mrp&quot;),
   height = 500,
-  width = 1000,
+  width = 900,
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = &quot;Country&quot;,
   y = &quot;mean&quot;,
@@ -141,7 +143,7 @@ ePlotFacet$templates$script = paste0(path,&quot;/layouts/chart.html&quot;)
 ePlotFacet$params =   list(
   data = mrp,
   height = 500,
-  width = 1000,
+  width = 900,
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = &quot;Country&quot;,
   y = &quot;mean&quot;,
@@ -163,7 +165,7 @@ ePlotFacet
 1. <a href="http://github.com/ramnathv">Ramnath Vaidyanathan</a> - <a href="https://twitter.com/ramnath_vaidya">@ramnath_vaidya</a><br>
 2. <a href="http://cpsievert.github.io/">Carson Sievert</a> - <a href="https://twitter.com/cpsievert">@cpsievert</a><br>
 2. <a href="http://dillingham.me.uk/">Iain Dillingham</a><br>
-4. <a href="http://fillintheblank.com">missing link</a><br>
+4. <a href="http://ssrn.com/abstract=91416">Fernandez, Pablo and Aguirreamalloa, Javier and Linares, Pablo</a><br>
 5. <a href="http://bost.ocks.org/mike/">Mike Bostock</a><br>
 6. Everybody else that has contributed R and d3 examples online. I probably have looked at them.</p>
 
