@@ -100,7 +100,7 @@ ePlot$params =  list(
   margin = list(top = 10, bottom = 10, right = 50, left = 100),
   x = "Country",
   y = "mean",
-  radius = 2,
+  radius = 3,
   sort = list( var = "mean" ),
   whiskers = "#!function(d){return [d.mean - 1.96 * d.sd, d.mean + 1.96 * d.sd]}!#",
   tooltipLabels = c("Country","mean","sd") 
